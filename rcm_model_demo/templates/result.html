@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Best Matching Glasses</title>
+  </head>
+  <body>
+    <h2>Best Matching Glasses:</h2>
+    <div>
+      {% for match in matches %}
+      <div style="border: 1px solid #ccc; padding: 10px; margin: 10px">
+        <p>ID: {{ match.id }}</p>
+        <p>Image:</p>
+        <img
+          src="{{ match.image_src }}"
+          alt="Glasses Image"
+          style="max-width: 200px"
+        />
+        <p>Gender: {{ match.gender }}</p>
+        <p>Face Shape: {{ match.face_shape }}</p>
+        <p>Skin: {{ match.skin }}</p>
+        <p>Width: {{ match.width }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    <a href="/">Back to Home</a>
+  </body>
+</html>

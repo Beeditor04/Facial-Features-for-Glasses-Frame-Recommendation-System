@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Glasses Recommendation</title>
+  </head>
+  <body>
+    <h1>Find Your Perfect Glasses</h1>
+    <form
+      id="userForm"
+      action="/predict"
+      method="post"
+      onsubmit="submitForm(event)"
+    >
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      <br />
+      <label for="face_shape">Face Shape:</label>
+      <input type="text" id="face_shape" name="face_shape" />
+      <br />
+      <label for="skin">Skin:</label>
+      <input type="text" id="skin" name="skin" />
+      <br />
+      <label for="width">Width:</label>
+      <input type="number" id="width" name="width" />
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+    <div id="result"></div>
+    <script>
+      function submitForm(event) {
+        event.preventDefault();
+        const formData = {
+          gender: document.getElementById("gender").value,
+          face_shape: document.getElementById("face_shape").value,
+          skin: document.getElementById("skin").value,
+          width: document.getElementById("width").value,
+        };
+
+        fetch("/predict", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        })
+          .then((response) => response.text())
+          .then((html) => {
+            document.getElementById("result").innerHTML = html;
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+    </script>
+  </body>
+</html>
