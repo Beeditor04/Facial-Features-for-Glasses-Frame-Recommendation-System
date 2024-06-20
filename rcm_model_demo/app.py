@@ -7,17 +7,18 @@ import numpy as np
 # Load the model, encoder, and scaler
 model = joblib.load('nearest_neighbors_model.pkl')
 encoder = joblib.load('encoder.pkl')
-scaler = joblib.load('scaler.pkl')
+# scaler = joblib.load('scaler.pkl')
 
 app = Flask(__name__)
 
 # Function to preprocess new item data
-def preprocess_item(item, encoder, scaler):
+def preprocess_item(item, encoder):
     item_df = pd.DataFrame([item])
     categorical_features = ['gender', 'face_shape', 'skin']
     encoded_item = encoder.transform(item_df[categorical_features]).toarray()
-    scaled_numerical_item = scaler.transform(item_df[['width']])
-    return np.hstack([encoded_item, scaled_numerical_item])
+    # scaled_numerical_item = scaler.transform(item_df[['width']])
+    # return np.hstack([encoded_item, scaled_numerical_item])
+    return encoded_item
 
 @app.route('/')
 def home():
@@ -26,7 +27,7 @@ def home():
 @app.route('/predict', methods=['POST'])
 def predict():
     user_data = request.json
-    new_user_features = preprocess_item(user_data, encoder, scaler).reshape(1, -1)
+    new_user_features = preprocess_item(user_data, encoder).reshape(1, -1)
     n_neighbors = 10  # Adjust this number to get more recommendations
     distances, indices = model.kneighbors(new_user_features, n_neighbors=n_neighbors)
     
