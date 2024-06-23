@@ -1,4 +1,5 @@
-# Import necessary libraries
+# data_augmentation.py
+
 import os
 import cv2
 import numpy as np
@@ -10,7 +11,8 @@ datagen = ImageDataGenerator(rotation_range=20, horizontal_flip=True)
 
 def feature_engineering_and_augmentation(path, img_size=(224, 224)):
     labels = []
-    images = []
+    original_images = []
+    augmented_images = []
     shape_types = ['Heart', 'Oblong', 'Oval', 'Round', 'Square']
     
     for shape in shape_types:
@@ -32,21 +34,22 @@ def feature_engineering_and_augmentation(path, img_size=(224, 224)):
             img = cv2.resize(img, img_size)
             # Normalize image to range [0, 1]
             img = img.astype('float32') / 255.0
-            images.append(img)
+            original_images.append(img)
             labels.append(shape_types.index(shape))
 
+            # Augment the images
+            img_expanded = np.expand_dims(img, axis=0)  # Prepare the image for the generator
+            augmented_iter = datagen.flow(img_expanded, batch_size=1)
+            augmented_img = next(augmented_iter)[0]  # Get the augmented image
+            augmented_images.append(augmented_img)
+
     # Convert lists to numpy arrays
-    images = np.array(images)
+    original_images = np.array(original_images)
+    augmented_images = np.array(augmented_images)
     labels = to_categorical(labels, num_classes=len(shape_types))
 
-    # Augment the images
-    augmented_images = []
-    for img in images:
-        img = np.expand_dims(img, axis=0)  # Prepare the image for the generator
-        augmented_iter = datagen.flow(img, batch_size=1)
-        augmented_img = next(augmented_iter)[0]  # Get the augmented image
-        augmented_images.append(augmented_img)
+    print(f"Original images count: {len(original_images)}")
+    print(f"Augmented images count: {len(augmented_images)}")
+    print(f"Labels count: {len(labels)}")
 
-    augmented_images = np.array(augmented_images)
-
-    return augmented_images, labels
+    return original_images, augmented_images, labels
