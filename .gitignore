@@ -1,4 +1,6 @@
 cropped_dataset
 cropped_dataset.zip
+raw_dataset
+preprocessed_dataset
 dataset
 model/ml-model1.pkl
