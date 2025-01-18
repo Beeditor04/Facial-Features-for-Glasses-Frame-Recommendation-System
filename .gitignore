@@ -5,3 +5,4 @@ preprocessed_dataset
 dataset
 model/ml-model1.pkl
 report
+*.pdf
